@@ -1,0 +1,261 @@
+<!-- experimenting with drag and drop functionality in a list -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drag And Drop</title>
+  <style>
+    hr {
+      margin: 30px 10px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .box {
+      border: 3px solid black;
+      background-color: gray;
+      padding: 10px;
+      cursor: move;
+    }
+
+    .box.over {
+      border: 3px dotted red;
+    }
+
+    .containerTwo {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .boxTwo {
+      border: 2px solid black;
+      background-color: yellowgreen;
+      padding: 5px;
+      margin: 2px auto;
+      text-align: center;
+      cursor: move;
+    }
+
+    .boxTwo.overTwo {
+      border: 3px dotted blue;
+    }
+  </style>
+</head>
+<body>
+  <h2 style='text-align: center;'>Drag And Drop A List</h2>
+  <hr />
+  <!-- column list -->
+  <div class="container">
+    <!-- most el can be dragged -->
+    <div draggable="true" class="box">A</div>
+    <div draggable="true" class="box">B</div>
+    <div draggable="true" class="box">C</div>
+    <div draggable="true" class="box">D</div>
+  </div>
+  <hr />
+  <!-- row list -->
+  <ul class='containerTwo'>
+    <li draggable='true' class='boxTwo'>A</li>
+    <li draggable='true' class='boxTwo'>B</li>
+    <li draggable='true' class='boxTwo'>C</li>
+    <li draggable='true' class='boxTwo'>D</li>
+  </ul>
+
+
+  <!-- drag and drop functionality using js api 'dragstart', 'drop', etc. -->
+  <!-- drag and drop api needs:
+       1. a source el (origin of where drag begins), which contains the data payload (what is going to drop),
+       2. a target area (aka drop zone(s)) to catch the drop.
+
+       The source el can be most elements (list, file obj, image, etc.), 
+       while the target el cant be certain els like an image
+  -->
+  <script>
+    /* 
+      below drag and drop 2 implementations, example:
+      [a, b, c, d] // user drags 'a' source onto 'c' target, then this:
+      [c, b, a, d]
+    */
+
+    // 'DOMContentLoaded': event is triggered immediately after
+    // the initial HTML doc is loaded, w/out stylesheets, images, etc.
+    document.addEventListener('DOMContentLoaded', (event) => {
+
+      //#region drag and drop example1: list columns:
+      // draggedEl is needed  to compare conditional statement
+      let draggedEl;
+      // func to begin the drag and drop sequence; el must be draggable=true
+      function handleDragStart(e) {
+        // console.log('e.target: ', e.target);
+        // the opacity of dragged el
+        this.style.opacity = '0.4';
+
+        draggedEl = this;
+
+        // what type of drag? 'move', 'copy',...
+        e.dataTransfer.effectAllowed = 'move';
+        // needed to make the data payload transfer when drag/drop
+        e.dataTransfer.setData('text/html', this.innerHTML);
+      };
+
+      function handleDragEnd(e) {
+        this.style.opacity = '1';
+
+        items.forEach(function (item) {
+          item.classList.remove('over');
+        });
+      };
+
+      function handleDragOver(e) {
+        // when dragging an el that is a link, prevent the default behavior, so
+        // the browser doesnt navigate to the link
+        if (e.preventDefault) {
+          e.preventDefault();
+        }
+        // good practice to return false when calling this func
+        return false;
+      };
+
+      // better to toggle '.over' via handleDragEnter/Leave than
+      // thru handleDragOver, bc the latter will trigger the toggle constantly
+      function handleDragEnter(e) {
+        this.classList.add('over');
+      };
+      function handleDragLeave(e) {
+        this.classList.remove('over');
+      };
+
+      // this is where the actual dropping of el occurs
+      // when this func is called, it triggers the browser to do a redirect
+      function handleDrop(e) {
+        // stops the browser's default behavior from redirecting
+        e.stopPropagation();
+
+        // check to be sure user isnt dropping the el to its origin location
+        if (draggedEl !== this) {
+          draggedEl.innerHTML = this.innerHTML;
+          // this is where the drag and drop magic occurs
+          this.innerHTML = e.dataTransfer.getData('text/html');
+        }
+
+        // good practice to return false when calling this func
+        return false;
+      };
+
+      // '.container' el is the target (drop zone)
+      // '.box' is the source (dragged el's origin) and the data payload
+      let items = document.querySelectorAll('.container .box');
+      items.forEach(function (item) {
+        // event listeners for the entire drag and drop process
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragover', handleDragOver);
+        item.addEventListener('dragenter', handleDragEnter);
+        item.addEventListener('dragleave', handleDragLeave);
+        item.addEventListener('dragend', handleDragEnd);
+        item.addEventListener('drop', handleDrop);
+      });
+      //#endregion
+
+      //#region drag and drop example2: list of rows
+      // grab all elements from list and assign nodelist to itemsTwo
+      let itemsTwo = document.querySelectorAll('.containerTwo .boxTwo');
+      console.log(itemsTwo);
+
+      // draggedElTwo is needed to do conditional statement
+      let draggedElTwo;
+      const handleDragStartTwo = (e) => {
+        console.log('e.target: ', e.target);
+        e.target.style.opacity = '.25';
+
+        draggedElTwo = e.target;
+
+        e.dataTransfer.effectAllowed = 'moved';
+        e.dataTransfer.setData('text/html', e.target.innerHTML);
+      };
+
+      const handleDragEndTwo = (e) => {
+        e.target.style.opacity = '1';
+
+        itemsTwo.forEach(function (item) {
+          item.classList.remove('overTwo');
+        });
+      };
+
+      const handleDragOverTwo = (e) => {
+        if (e.preventDefault) {
+          e.preventDefault();
+        }
+
+        return false;
+      };
+
+      const handleDragEnterTwo = (e) => {
+        e.target.classList.add('overTwo');
+      };
+
+      const handleDragLeaveTwo = (e) => {
+        e.target.classList.remove('overTwo');
+      };
+
+      const handleDropTwo = (e) => {
+        e.stopPropagation();
+
+        // find indexOf target/dropzone el from itemsTwo nodelist
+        const targetElementIndex = Array.from(itemsTwo).indexOf(e.target);
+        console.log(
+          'indexof of target: ',
+          Array.from(itemsTwo).indexOf(e.target)
+        );
+        // conflicting info compared to above indexOf, 
+        // where e.target is the target/dropzone, here e.target is the source:
+        // 'draggedElTwo' is the target/dropzone, 'e.target' is the source
+        console.log('dropping at: ', draggedElTwo, e.target);
+
+        if (draggedElTwo !== e.target) {
+          draggedElTwo.innerHTML = e.target.innerHTML;
+          e.target.innerHTML = e.dataTransfer.getData('text/html');
+
+          console.log('dropped e.target.innerHTML: ', e.target.innerHTML);
+
+          // for later use in another project:
+          // find 2 els (one directly above, one directly below) btwn dropped el
+          // for brevity: 'one directly below el' is the target el
+          // for the 'project'- have a blank target el betwn items of list
+          console.log(
+            'elements between dropped element: ',
+            itemsTwo[targetElementIndex - 1],
+            draggedElTwo
+          );
+        }
+
+        return false;
+      };
+
+      // let itemsTwo = document.querySelectorAll('.containerTwo .boxTwo');
+      itemsTwo.forEach(function (item) {
+        item.addEventListener('dragstart', handleDragStartTwo);
+        item.addEventListener('dragover', handleDragOverTwo);
+        item.addEventListener('dragenter', handleDragEnterTwo);
+        item.addEventListener('dragleave', handleDragLeaveTwo);
+        item.addEventListener('dragend', handleDragEndTwo);
+        item.addEventListener('drop', handleDropTwo);
+      });
+      //#endregion
+    });
+
+
+    /*
+      another drag and drop implemenation below;
+      this one wedges source element between two items in a list, example:
+      [a, b, c, d]  // user drags 'a' source btwn 'c' and 'd' targets
+      [b, c, a, d]
+    */
+
+
+  </script>
+</body>
+</html>
