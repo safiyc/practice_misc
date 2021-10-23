@@ -14,59 +14,80 @@
       gap: 10px;
     }
 
-    .box {
-      border: 3px solid black;
-      background-color: gray;
-      padding: 10px;
-      cursor: move;
-    }
-
-    .box.over {
-      border: 3px dotted red;
-    }
-
     .containerTwo {
       list-style: none;
       padding: 0;
       margin: 0;
     }
 
-    .boxTwo {
+    .item {
       border: 2px solid black;
       background-color: yellowgreen;
       padding: 5px;
-      margin: 2px auto;
+      margin: -2px auto;
       text-align: center;
       cursor: move;
     }
 
-    .boxTwo.overTwo {
-      border: 3px dotted blue;
+    .item2 {
+      border: 2px solid black;
+      background-color: lightblue;
+      padding: 5px;
+      margin: -2px auto;
+      text-align: center;
+      cursor: move;
+    }
+
+    /* css grid column fix */
+    .item-tweaked {
+      margin: unset;
+    }
+
+    .over {
+      outline: 2px dotted blue;
+    }
+
+    .overTop {
+      border-top: 2px dotted red;
+    }
+
+    .overBottom {
+      border-bottom: 2px dotted red;
     }
   </style>
 </head>
 <body>
-  <h2 style='text-align: center;'>Drag And Drop A List</h2>
+  <h2 style='text-align: center;'>Drag And Drop An Element</h2>
+  <hr />
   <hr />
   <!-- column list -->
-  <div class="container">
+  <div class="container" id='list1'>
     <!-- most el can be dragged -->
-    <div draggable="true" class="box">A</div>
-    <div draggable="true" class="box">B</div>
-    <div draggable="true" class="box">C</div>
-    <div draggable="true" class="box">D</div>
+    <div draggable="true" class="item item-tweaked">A</div>
+    <div draggable="true" class="item item-tweaked">B</div>
+    <div draggable="true" class="item item-tweaked">C</div>
+    <div draggable="true" class="item item-tweaked">D</div>
   </div>
   <hr />
   <!-- row list -->
-  <ul class='containerTwo'>
-    <li draggable='true' class='boxTwo'>A</li>
-    <li draggable='true' class='boxTwo'>B</li>
-    <li draggable='true' class='boxTwo'>C</li>
-    <li draggable='true' class='boxTwo'>D</li>
+  <ul class='containerTwo' id='list2'>
+    <li draggable='true' class='item'>A</li>
+    <li draggable='true' class='item'>B</li>
+    <li draggable='true' class='item'>C</li>
+    <li draggable='true' class='item'>D</li>
+  </ul>
+  <hr />
+  <!-- row list -->
+  <ul class='containerTwo' id='list3'>
+    <li draggable='true' class='item2'>E</li>
+    <li draggable='true' class='item2'>F</li>
+    <li draggable='true' class='item2'>G</li>
+    <li draggable='true' class='item2'>H</li>
+    <li draggable='true' class='item2'>I</li>
   </ul>
 
 
-  <!-- drag and drop functionality using js api 'dragstart', 'drop', etc. -->
+  <!-- drag and drop functionality using js api drag and drop: 'dragstart', 'drop', etc. -->
   <!-- drag and drop api needs:
        1. a source el (origin of where drag begins), which contains the data payload (what is going to drop),
        2. a target area (aka drop zone(s)) to catch the drop.
@@ -75,16 +96,14 @@
        while the target el cant be certain els like an image
   -->
   <script>
-    /* 
-      below drag and drop 2 implementations, example:
-      [a, b, c, d] // user drags 'a' source onto 'c' target, then this:
-      [c, b, a, d]
-    */
-
     // 'DOMContentLoaded': event is triggered immediately after
     // the initial HTML doc is loaded, w/out stylesheets, images, etc.
     document.addEventListener('DOMContentLoaded', (event) => {
-
+      /*
+        below drag and drop implementations (#list1, #list2), example:
+        [a, b, c, d] // user drags 'a' source onto 'c' target, then this:
+        [c, b, a, d]
+      */
       //#region drag and drop example1: list columns:
       // draggedEl is needed  to compare conditional statement
       let draggedEl;
@@ -147,8 +166,8 @@
       };
 
       // '.container' el is the target (drop zone)
-      // '.box' is the source (dragged el's origin) and the data payload
-      let items = document.querySelectorAll('.container .box');
+      // '.item' is the source (dragged el's origin) and the data payload
+      let items = document.querySelectorAll('#list1 .item');
       items.forEach(function (item) {
         // event listeners for the entire drag and drop process
         item.addEventListener('dragstart', handleDragStart);
@@ -161,9 +180,9 @@
       //#endregion
 
       //#region drag and drop example2: list of rows
-      // grab all elements from list and assign nodelist to itemsTwo
-      let itemsTwo = document.querySelectorAll('.containerTwo .boxTwo');
-      console.log(itemsTwo);
+      // grab all elements from list and assign nodelist to list2
+      let list2 = document.querySelectorAll('#list2 .item');
+      // console.log(list2);
 
       // draggedElTwo is needed to do conditional statement
       let draggedElTwo;
@@ -180,8 +199,8 @@
       const handleDragEndTwo = (e) => {
         e.target.style.opacity = '1';
 
-        itemsTwo.forEach(function (item) {
-          item.classList.remove('overTwo');
+        list2.forEach(function (item) {
+          item.classList.remove('over');
         });
       };
 
@@ -194,24 +213,23 @@
       };
 
       const handleDragEnterTwo = (e) => {
-        e.target.classList.add('overTwo');
+        e.target.classList.add('over');
       };
 
       const handleDragLeaveTwo = (e) => {
-        e.target.classList.remove('overTwo');
+        e.target.classList.remove('over');
       };
 
       const handleDropTwo = (e) => {
         e.stopPropagation();
 
-        // find indexOf target/dropzone el from itemsTwo nodelist
-        const targetElementIndex = Array.from(itemsTwo).indexOf(e.target);
+        // find indexOf target/dropzone el from list2 nodelist
+        const targetElementIndex = Array.from(list2).indexOf(e.target);
         console.log(
           'indexof of target: ',
-          Array.from(itemsTwo).indexOf(e.target)
+          Array.from(list2).indexOf(e.target)
         );
-        // conflicting info compared to above indexOf, 
-        // where e.target is the target/dropzone, here e.target is the source:
+
         // 'draggedElTwo' is the target/dropzone, 'e.target' is the source
         console.log('dropping at: ', draggedElTwo, e.target);
 
@@ -227,7 +245,7 @@
           // for the 'project'- have a blank target el betwn items of list
           console.log(
             'elements between dropped element: ',
-            itemsTwo[targetElementIndex - 1],
+            list2[targetElementIndex - 1],
             draggedElTwo
           );
         }
@@ -235,8 +253,7 @@
         return false;
       };
 
-      // let itemsTwo = document.querySelectorAll('.containerTwo .boxTwo');
-      itemsTwo.forEach(function (item) {
+      list2.forEach(function (item) {
         item.addEventListener('dragstart', handleDragStartTwo);
         item.addEventListener('dragover', handleDragOverTwo);
         item.addEventListener('dragenter', handleDragEnterTwo);
@@ -245,17 +262,128 @@
         item.addEventListener('drop', handleDropTwo);
       });
       //#endregion
+
+
+      /*
+        another drag and drop implemenation (#list3);
+        this one wedges source element between two items in a list, example:
+        [a, b, c, d]  // user drags 'a' source btwn 'c' and 'd' targets
+        [b, c, a, d]
+      */
+      //#region drag and drop example3:
+      // grab static copy of nodelist
+      // let list3 = document.querySelectorAll('#list3 .item2');
+      // grab live nodes
+      let list3Live = document.getElementById('list3').childNodes;
+      // console.log(list3Live);
+
+      // draggedList3ChildEl is dragged item, needed for conditional comparisons in funcs
+      let draggedList3ChildEl;
+
+      // func is triggered at monent item initiates drag
+      // e is item being dragged
+      const handleDragStartThree = (e) => {
+        // console.log('e.target: ', e.target);
+        e.target.style.opacity = '.25';
+
+        draggedList3ChildEl = e.target;
+
+        // e.dataTransfer.effectAllowed = 'moved';
+        // e.dataTransfer.setData('text/html', e.target.innerHTML);
+      };
+
+      // func executes after drag/drop process ends
+      // e is item being dragged
+      const handleDragEndThree = (e) => {
+        e.target.style.opacity = '1';
+
+        console.log('after drag-drop completes: ', list3Live);
+      };
+
+      // func is triggered at all times when dragged item is dragged inside dropzone
+      // e is dropzone element
+      const handleDragOverThree = (e) => {
+        // prevent default if dragged item is a link
+        if (e.preventDefault) {
+          e.preventDefault();
+
+          // get height of dropzone element (domRect.height)
+          // offsetY is relative to cursor's location inside dropzone 
+          const domElementHeight = e.currentTarget.getBoundingClientRect().height;
+          let domElementHeightOffset;
+          domElementHeightOffset = e.offsetY;
+          // console.log('domElementHeightOffset: ', domElementHeightOffset);
+          if (draggedList3ChildEl !== e.target) {
+            if (domElementHeightOffset <= domElementHeight / 2) {
+              e.target.classList.add('overTop');
+              e.target.classList.remove('overBottom');
+            } else if (domElementHeight > domElementHeight / 2) {
+              e.target.classList.add('overBottom');
+              e.target.classList.remove('overTop');
+            }
+          }
+          //#endregion
+        }
+
+        return false;
+      };
+
+      // func executes when dragged item is dragged past a dropzone
+      // remmove styling overTop/Bottom when cursor is out of d dropzone element
+      // e is dropzone element
+      const handleDragLeaveThree = (e) => {
+        e.target.classList.remove('overTop');
+        e.target.classList.remove('overBottom');
+      };
+
+      // func is triggered at moment of dragged element drop
+      // e is dropzone element
+      const handleDropThree = (e) => {
+        e.stopPropagation();
+
+        // 'draggedList3ChildEl' is the source, 'e.target' is the target
+        // console.log('dropping at: ', draggedList3ChildEl, e.target);
+
+        if (draggedList3ChildEl !== e.target) {
+          // draggedList3ChildEl.innerHTML = e.target.innerHTML;
+          // e.target.innerHTML = e.dataTransfer.getData('text/html');
+
+          let targetInd = Array.from(list3Live).indexOf(e.target);
+          // let sourceInd = Array.from(list3Live).indexOf(draggedList3ChildEl);
+          // console.log('index of source: ', sourceInd, 'index of target: ', targetInd);
+
+          // get height of dropzone element (domRect.height)
+          // offsetY is relative to cursor's location inside dropzone 
+          const domElementHeight = e.currentTarget.getBoundingClientRect().height;
+          // console.log('e.offsetY: ', e.offsetY, 'height: ', domElementHeight);
+
+          // if offsetY is less than half of dropzone element's height
+          // append element before dropzone element, else after
+          if (e.offsetY <= domElementHeight / 2) {
+            list3Live[targetInd].insertAdjacentElement('beforebegin', draggedList3ChildEl);
+          } else if (e.offsetY > domElementHeight / 2) {
+            list3Live[targetInd].insertAdjacentElement('afterend', draggedList3ChildEl);
+          }
+
+          e.target.classList.remove('overBottom');
+          e.target.classList.remove('overTop');
+        }
+
+
+        return false;
+      };
+
+      list3Live.forEach(function (item) {
+        item.addEventListener('dragstart', handleDragStartThree);
+        item.addEventListener('dragend', handleDragEndThree);
+        // item.addEventListener('dragover', handleDragOverThree);
+        // item.addEventListener('dragenter', handleDragEnterThree);
+        item.addEventListener('dragleave', handleDragLeaveThree);
+        item.addEventListener('dragover', handleDragOverThree);
+        item.addEventListener('drop', handleDropThree);
+      });
+      //#endregion
     });
-
-
-    /*
-      another drag and drop implemenation below;
-      this one wedges source element between two items in a list, example:
-      [a, b, c, d]  // user drags 'a' source btwn 'c' and 'd' targets
-      [b, c, a, d]
-    */
-
-
   </script>
 </body>
 </html>
