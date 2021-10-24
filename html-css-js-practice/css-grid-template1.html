@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang='en-us'>
+<head>
+  <!-- 
+    -css grid template for webpage layout with header, navbar, sidebar, main, footer
+    -footer is always at bottom of webpage, regardless of 'main' content height
+   -->
+  <title>Template1 - Header, Navbar, Sidebar, Footer</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+    }
+
+    .container {
+      /* need to set min-height so grid fills entire page and footer will be at bottom always */
+      min-height: 100vh;
+      display: grid;
+      gap: 5px;
+      /* mobile view; single column view */
+      grid-template-areas:
+        'header'
+        'nav'
+        'article'
+        'ads'
+        'sidebar'
+        'footer';
+      /* to set footer at bottom of page */
+      /* auto is height of el; 1fr is setting to take as much space of page, even when content is lacking */
+      grid-template-rows: auto auto 1fr 1fr 1fr auto;
+    }
+
+    /* if screen width is more than 550px; 2-column view */
+    @media (min-width: 550px) {
+      .container {
+        grid-template-columns: 1fr 3fr;
+        grid-template-areas:
+          'header header'
+          'nav    nav'
+          'ads    article'
+          'sidebar article'
+          'footer footer';
+        /* to set footer at bottom of page */
+        grid-template-rows: auto auto 1fr 1fr auto;
+      }
+
+      nav ul {
+        display: flex;
+        justify-content: space-between;
+        list-style: none;
+      }
+    }
+
+    /* if screen width is more than 750px; 3-column view */
+    @media (min-width: 750px) {
+      .container {
+        /* columns space total 6 parts- 1 for nav, 1 for sidebar/pop, 4 for center grid-template-area */
+        grid-template-columns: 1fr 4fr 1fr;
+        grid-template-areas:
+          'header header header'
+          'nav article ads'
+          'nav article sidebar'
+          'footer footer footer';
+        /* to set footer at bottom of page */
+        grid-template-rows: auto 1fr 1fr auto;
+      }
+
+      nav ul {
+        flex-direction: column;
+      }
+    }
+
+    header {
+      grid-area: header;
+      border: 2px solid grey;
+      padding: 5px;
+      text-align: center;
+    }
+
+    article {
+      grid-area: article;
+      border: 2px solid grey;
+      padding: 5px;
+    }
+
+    nav {
+      grid-area: nav;
+      border: 2px solid grey;
+      padding: 5px 10px;
+    }
+
+    nav ul {
+      padding-left: 0;
+    }
+
+    aside {
+      grid-area: sidebar;
+      border: 2px solid grey;
+      padding: 5px;
+    }
+
+    .ads {
+      grid-area: ads;
+      border: 2px solid grey;
+      padding: 5px;
+    }
+
+    footer {
+      grid-area: footer;
+      border: 2px solid grey;
+      padding: 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class='container'>
+    <header>Header</header>
+    <nav>
+      <ul>
+        <li><a href=''>Courses</a></li>
+        <li><a href=''>Locations</a></li>
+        <li><a href=''>Career</a></li>
+        <li><a href=''>About</a></li>
+      </ul>
+    </nav>
+    <article>
+      <h1>Practicing CSS Grid</h1>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati odit voluptatem sit pariatur natus mollitia
+        delectus! Officiis et accusantium eaque, voluptatem, inventore temporibus aperiam nihil rem laborum rerum quae
+        quam?
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, quibusdam fugit cum assumenda doloribus
+        repudiandae omnis laborum neque officia tempora placeat, porro, quidem amet perferendis magnam incidunt
+        voluptatem blanditiis cupiditate? Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni temporibus
+        minima, illum repellendus non possimus officiis laborum omnis veritatis excepturi eius corporis ut ad voluptas
+        velit inventore cum quo cumque. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit corrupti laborum
+        adipisci temporibus perspiciatis, quam voluptate vitae exercitationem repellat aliquid unde esse harum iste,
+        tempora fuga eveniet id accusantium reprehenderit!
+      </p>
+    </article>
+    <div class='ads'>
+      <h4>Ads</h4>
+    </div>
+    <aside>
+      <h4>Popular Articles</h4>
+      <ul>
+        <li><a>Article</a></li>
+        <li><a>Article</a></li>
+        <li><a>Article</a></li>
+        <li><a>Article</a></li>
+      </ul>
+    </aside>
+    <footer>Footer</footer>
+  </div>
+</body>
+</html>
