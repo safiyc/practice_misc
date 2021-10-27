@@ -1,0 +1,27 @@
+.textCenter {
+  text-align: center;
+}
+
+.container {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  border: 2px solid black;
+  background-color: lightblue;
+  padding: 5px;
+  /* margin: -2px auto; */
+  margin: 4px auto;
+  cursor: move;
+}
+
+.overTop {
+  border-top: 2px dotted red;
+}
+
+.overBottom {
+  border-bottom: 2px dotted red;
+}
+
