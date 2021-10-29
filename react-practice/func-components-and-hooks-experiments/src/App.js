@@ -1,5 +1,6 @@
-// import React from 'react';
+// Here I practice/play/experiment using react components and hooks; no backend connections
 
+// import React from 'react';
 import DragAndDropList from './DragAndDropList';
 import TicTacToeFun from './TicTacToeFun';
 
