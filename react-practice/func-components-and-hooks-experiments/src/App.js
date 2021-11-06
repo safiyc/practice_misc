@@ -5,10 +5,13 @@ import DragAndDropList from './DragAndDropList';
 import TicTacToeFun from './TicTacToeFun';
 
 import './styling.css';
+import Modal from './Modal';
 
 function App() {
   return (
     <>
+      <Modal />
+      <hr />
       <DragAndDropList />
       <hr />
       <TicTacToeFun />
